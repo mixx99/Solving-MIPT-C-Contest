@@ -9,7 +9,7 @@ unsigned long long fib_mod(int n, int m)
     unsigned long long first = 0, second = 1, temp;
     for (int i = 2; i <= n; ++i)
     {
-        temp = (first + second) % m; // берем остаток на каждом шаге
+        temp = (first + second) % m; 
         first = second;
         second = temp;
     }
