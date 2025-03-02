@@ -1,32 +1,42 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-
-unsigned long long fib(unsigned long long n)
+unsigned long long fib_mod(int n, int m)
 {
-	if(n == 0)
-		return 0ull;
-	unsigned long long first = 0ull, second = 1ull;
-	int i;
-	for(i = 2; i <= n; i++)
-	{
-		unsigned long long tmp = second;
-		second = second + first;
-		first = tmp;
-	}
-	return second;
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    
+    unsigned long long first = 0, second = 1, temp;
+    for (int i = 2; i <= n; ++i)
+    {
+        temp = (first + second) % m; // берем остаток на каждом шаге
+        first = second;
+        second = temp;
+    }
+    return second;
+}
+
+int get_pizano(unsigned long long n)
+{
+    int first = 0, second = 1, temp, i;
+    for (i = 1;; ++i)
+    {
+        temp = (first + second) % n;
+        first = second;
+        second = temp;
+        
+        if (first == 0 && second == 1)
+            return i;
+    }
 }
 
 int main()
 {
-	unsigned long long n, m;
-	scanf("%llu%llu", &n, &m);
-	int i = 3;
-	while(1)
-	{
-		if((fib(i) % m == 0) && (fib(i + 1) % m) == 1){
-			break;
-		}
-		++i;
-	}
-	printf("%llu\n", fib((n % i)) % m);
+    unsigned long long n, m;
+    if (scanf("%llu%llu", &n, &m) != 2)
+        abort();
+
+    int pizano = get_pizano(m);
+    printf("%llu", fib_mod(n % pizano, m));
 }
+
