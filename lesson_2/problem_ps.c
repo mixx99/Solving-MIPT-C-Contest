@@ -1,61 +1,49 @@
-// It doesn't pass the test #11, Time-Limit. I'll fix it later
-
-
 #include <stdlib.h>
 #include <stdio.h>
-#include "u_template.h"
+#include <assert.h>
 void fill_sieve(struct sieve_t *sv);
 int nth_prime(struct sieve_t *sv, int N);
-int is_prime(int n);
-void mark_num_in_arr(char* t, int start, int end, int n);
+int is_prime(struct sieve_t* sv, int N);
+void set_prime(struct sieve_t* sv, int N);
 
+
+
+
+int nth_prime(struct sieve_t* sv, int N)
+{
+  int cnt = 0, i = 2;
+  if(N == 1) return 2;
+
+  while(1)
+  {
+    if(is_prime(sv, i) == 1)
+      cnt++;
+    if(cnt == N)
+      return i;
+    i++;
+  }
+}
 
 
 void fill_sieve(struct sieve_t* sv)
 {
-	for(int i = 2; i < sv->n; ++i)
-	{
-		if(sv->s[i] == 0)
-		{
-			if(is_prime(i) == 1){
-				mark_num_in_arr(sv->s, i, sv->n, i);
-			}
-			else
-				sv->s[i] = 1;
-		}	
-	}
+for(int i = 2; i*i < sv->n; ++i)
+  {
+    if(is_prime(sv, i))
+      for(int j = i * i; j < sv->n; j += i)
+          set_prime(sv, j);
+  }
 }
 
-int is_prime(int n)
+void set_prime(struct sieve_t* sv, int N)
 {
-        if(n < 2)
-        	return 0;
-        for(unsigned int i = 2; i*i <= n; ++i)
-        {
-                if((n % i) == 0)
-                       return 0;
-        }
-        return 1;
-
+  assert(sv->n > N);
+  sv->s[N] = 1;
 }
 
-int nth_prime(struct sieve_t* sv, int N)
+int is_prime(struct sieve_t* sv, int N)
 {
-	int counter = 0;
-	for(int i = 2; i < sv->n; ++i)
-	{
-		if(sv->s[i] == 0)
-			counter++;
-		if(counter == N)
-			return i;
-	}
-	return N;
-}
-
-void mark_num_in_arr(char* t, int start, int end, int n)
-{
-	for(int i = start + n; i < end; i += n)
-	{
-		t[i] = 1;
-	}
+  assert(N < sv->n);
+  if(sv->s[N] == 0) return 1;
+  else return 0;
 }
