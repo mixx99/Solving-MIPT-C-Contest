@@ -1,12 +1,10 @@
-
 // Compile with gcc problem_hwe.c -DNOCONTEST
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <assert.h>
 
 #ifdef NOCONTEST
-struct sieve_t;
+#include <assert.h>
 struct sieve_t {
   int n;
   unsigned char *mod1;
@@ -18,13 +16,16 @@ int is_prime(struct sieve_t *sv, unsigned n);
 void set_prime(struct sieve_t* sv, const unsigned n);
 int is_prime_mod1(struct sieve_t* sv, const unsigned n);
 int is_prime_mod5(struct sieve_t* sv, const unsigned n);
+
 void fill_sieve(struct sieve_t* sv)
 {
   int i, j;
-  //assert(sv->n > 0 && sv->mod1 != NULL && sv->mod5 != NULL);
-  int lim = 48 * (sv->n);
+  int lim = 48 * (sv->n); // 8 * 6 * sv->n
+#ifdef NOCONTEST
+  assert(sv->n > 0 && sv->mod1 != NULL && sv->mod5 != NULL);
+#endif
   sv->mod1[0] |= 1;
-  for(i = 0; i*i < lim; i += 6) // something terribly wrong here with limit.
+  for(i = 0; i*i < lim; i += 6) 
   {
     if(is_prime(sv, i + 1))
       for(j = (i+1)*(i+1); j <= lim; j += i + 1) 
@@ -51,7 +52,9 @@ int is_prime(struct sieve_t* sv, const unsigned n)
 int is_prime_mod5(struct sieve_t* sv, const unsigned n)
 {
   int bitnum, bytenum, a;
-  //assert(n - 5 < n);
+#ifdef NOCONTEST
+  assert(n - 5 < n);
+#endif
   a = (n -  5) / 6;
   bytenum = a / CHAR_BIT;
   bitnum = a % CHAR_BIT;
@@ -61,7 +64,9 @@ int is_prime_mod5(struct sieve_t* sv, const unsigned n)
 int is_prime_mod1(struct sieve_t* sv, const unsigned n)
 {
   int bitnum, bytenum, a;
-  //assert(n - 1 < n);
+#ifdef NOCONTEST
+  assert(n - 1 < n);
+#endif
   a = (n - 1) / 6;
   bytenum = a / CHAR_BIT;
   bitnum = a % CHAR_BIT;
@@ -78,6 +83,9 @@ void set_prime(struct sieve_t* sv, const unsigned n)
     a = (n - 1) / 6;
     bytenum = a / CHAR_BIT;
     bitnum = a % CHAR_BIT;
+#ifdef NOCONTEST
+    assert(bytenum < sv->n);
+#endif
     sv->mod1[bytenum] |= (1 << bitnum);
   }
   else if(n % 6 == 5)
@@ -85,16 +93,20 @@ void set_prime(struct sieve_t* sv, const unsigned n)
     a = (n - 5) / 6;
     bytenum = a / CHAR_BIT;
     bitnum = a % CHAR_BIT;
+#ifdef NOCONTEST
+    assert(bytenum < sv->n);
+#endif
     sv->mod5[bytenum] |= (1 << bitnum);
   }
 }
 #ifdef NOCONTEST
-int dump_prime_check(const int n);
+
+int simple_prime_check(const int n);
 void test(struct sieve_t* sv)
 {
   int flag_result = 1;
   for(int i = 0; i < 1000; ++i)
-    if(is_prime(sv, i) != dump_prime_check(i)){
+    if(is_prime(sv, i) != simple_prime_check(i)){
       printf("Something wrond with %d\n", i);
       flag_result = 0;
       }
@@ -104,7 +116,7 @@ void test(struct sieve_t* sv)
     printf("Something wrong.\n");
 }
 
-int dump_prime_check(const int n)
+int simple_prime_check(const int n)
 {
   if(n <= 1)
     return 0;
@@ -114,20 +126,18 @@ int dump_prime_check(const int n)
       return 0;
   return 1;
 }
-#endif
-#ifdef NOCONTEST
+
 int main()
 {
   struct sieve_t sv;
   int i;
-  sv.n = 10;
+  sv.n = 100;
   sv.mod1 = calloc(sv.n, sizeof(char));
   sv.mod5 = calloc(sv.n, sizeof(char));
   fill_sieve(&sv);
-  //test(&sv);
-#ifdef NOCONTEST 
+  test(&sv);
   int cnt = 1;
-  for(i = 0; i < 100; ++i)
+  for(i = 0;i < 1000; ++i)
   {
     if(is_prime(&sv, i))
     {
@@ -136,6 +146,5 @@ int main()
     }
   }
   //printf("%d --- %d\n", sv.mod1[0], sv.mod5[0]);
-#endif
 }
 #endif
