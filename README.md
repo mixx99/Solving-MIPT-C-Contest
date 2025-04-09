@@ -1,6 +1,16 @@
 # Solving MIPT C Contest
 
-Here will be solutions to MIPT constest about C languange and algorithms.
+## Зачем всё это?
+
+_"Кто знает, зачем мы пишем эти программы? Мы тренируемся. Это как музыканты играют гаммы.  
+Рано или поздно вы столкнётесь с программой, которую просто ещё никто кроме вас не написал.  
+Чтобы когда-нибудь сделать то, чего ещё никогда не было —  
+для начала нужно много-много-много-много-много простых программ написать.  
+И мы сотрём пальцы о клавиатуру в процессе разработки простых программ."_
+
+> — Konstantin Vladimirov
+## Preview
+Here will be solutions to MIPT contest about C language and algorithms.
 Link for task-website: https://contest.yandex.ru/contest/66459/problems/
 
 # Домашняя работа к семинару 1: основы языка C  
